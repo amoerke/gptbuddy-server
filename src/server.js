@@ -7,7 +7,7 @@ const PORT = Number(process.env.PORT || 3000);
 const JEV_API_KEY = process.env.JEV_API_KEY || "";
 const JEV_API_URL = process.env.JEV_API_URL || "https://api.typesafe.ai/v1/systemone";
 const JEV_MODEL = process.env.JEV_MODEL || "jev-latest";
-const CLIENT_SECRETS = parseClientSecrets(process.env.ROUTER_CLIENTS_JSON || "{}");
+const CLIENT_SECRETS = parseClientSecrets();
 const MAX_PROMPT_CHARACTERS = Number(process.env.MAX_PROMPT_CHARACTERS || 12000);
 const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS || 4000);
 const RATE_LIMIT_PER_MINUTE = Number(process.env.RATE_LIMIT_PER_MINUTE || 120);
@@ -29,13 +29,25 @@ const contextQuestion = {
   instructions: "Does this prompt require prior conversation, repository context, or clarification from the user to complete safely? Answer yes whenever uncertain.",
 };
 
-function parseClientSecrets(value) {
+function parseClientSecrets() {
+  const clientId = process.env.ROUTER_CLIENT_ID || "";
+  const clientSecret = process.env.ROUTER_CLIENT_SECRET || "";
+  if (clientId || clientSecret) {
+    if (clientId && clientSecret) return { [clientId]: clientSecret };
+    console.error("ROUTER_CLIENT_ID and ROUTER_CLIENT_SECRET must be set together.");
+    process.exit(1);
+  }
+
+  const encodedValue = process.env.ROUTER_CLIENTS_B64 || "";
+  const value = encodedValue
+    ? Buffer.from(encodedValue, "base64").toString("utf8")
+    : process.env.ROUTER_CLIENTS_JSON || "{}";
   try {
     const parsed = JSON.parse(value);
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
     return parsed;
   } catch {
-    console.error("ROUTER_CLIENTS_JSON must be a JSON object mapping client IDs to secrets.");
+    console.error("Set ROUTER_CLIENT_ID plus ROUTER_CLIENT_SECRET, ROUTER_CLIENTS_B64, or ROUTER_CLIENTS_JSON.");
     process.exit(1);
   }
 }

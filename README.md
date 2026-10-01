@@ -21,7 +21,7 @@ cp .env.example .env
 chmod 600 .env
 ```
 
-4. Trage einen dedizierten Jev-API-Schlüssel sowie einen langen, zufälligen Client-Schlüssel in `.env` ein.
+4. Trage einen dedizierten Jev-API-Schlüssel sowie den Client-Zugang in `.env` ein. Für einen einzelnen Team-Client verwende `ROUTER_CLIENT_ID` und `ROUTER_CLIENT_SECRET`; diese zwei getrennten Werte sind insbesondere in Coolify robuster als ein JSON-Wert. Für mehrere Geräte verwende in Coolify bevorzugt `ROUTER_CLIENTS_B64`, also ein Base64-kodiertes JSON-Objekt mit den Geräte-IDs und Secrets. `ROUTER_CLIENTS_JSON` bleibt als Alternative für Umgebungen verfügbar, die JSON-Werte unverändert weiterreichen.
 5. Starte den Dienst:
 
 ```bash
