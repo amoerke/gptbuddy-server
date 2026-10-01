@@ -29,7 +29,7 @@ docker compose up -d --build
 docker compose logs -f
 ```
 
-Die Compose-Datei enthält bewusst keinerlei Caddy-Konfiguration, Caddy-Container oder Zertifikatsverwaltung. Sie veröffentlicht den Router ausschließlich lokal über `127.0.0.1:3000`; dadurch ist der Health-Check auf dem VPS mit `http://localhost:3000/healthz` erreichbar, ohne den Dienst direkt aus dem Internet freizugeben. Dein bestehender Caddy-Service übernimmt Veröffentlichung, TLS und die Weiterleitung an den Router automatisch. Der öffentliche Gesundheitscheck bleibt `https://gptbuddy.dataminer.cloud/healthz`; das Routing verlangt immer eine gültige Signatur.
+Die Compose-Datei enthält bewusst keinerlei Caddy-Konfiguration, Caddy-Container, Zertifikatsverwaltung oder Host-Portfreigabe. Der Router stellt Port `3000` nur innerhalb des Docker-Netzwerks bereit. In Coolify trägst du im Feld **Domains** für den Service `router` `https://gptbuddy.dataminer.cloud:3000` ein. Coolify übernimmt damit TLS und die Weiterleitung auf den internen Container-Port, ohne Port 3000 auf dem VPS zu belegen. Der öffentliche Gesundheitscheck lautet anschließend `https://gptbuddy.dataminer.cloud/healthz`; das Routing verlangt immer eine gültige Signatur.
 
 ## Managed Client ausrollen
 
