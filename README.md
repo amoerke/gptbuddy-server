@@ -43,6 +43,8 @@ GPTBUDDY_CLIENT_SECRET=<identischer Wert wie in ROUTER_CLIENTS_JSON>
 
 Registriere den Hook danach über die zentral verwaltete Codex-Konfiguration als `UserPromptSubmit`-Hook. Der Hook enthält keinen Provider-API-Schlüssel und fällt bei Netzwerk- oder Serverproblemen immer auf die Hauptsitzung zurück.
 
+Der verwaltete Hook fordert für `collaboration.spawn_agent` explizit `gpt-6-luna` / `low` für `fast` und `gpt-6.1-sol` / `medium` für `standard` an, jeweils mit `fork_turns: "none"`. Ein Subagent-Name allein setzt kein Modell. Änderungen an dieser Zuordnung müssen auch im Client-Hook und dessen Codex-Rollendateien erfolgen. Die aktualisierte Datei muss auf die Geräte verteilt werden; ein Server-Deployment allein aktualisiert keine lokalen Hooks.
+
 ## Betrieb
 
 Aktualisieren:

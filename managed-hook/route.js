@@ -16,6 +16,18 @@ function fallback() {
   return { hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: "gptbuddy routing decision: keep_root. No delegation recommendation." } };
 }
 
+function hookOutput(route) {
+  // Keep these mappings in sync with the client hook and its Codex role files.
+  const profiles = {
+    fast: { model: "gpt-6-luna", reasoning_effort: "low" },
+    standard: { model: "gpt-6.1-sol", reasoning_effort: "medium" },
+  };
+  const profile = profiles[route.target];
+  if (!route.delegate || !profile) return fallback();
+  const additionalContext = `gptbuddy: Delegate this self-contained task once via collaboration.spawn_agent with ${JSON.stringify({ model: profile.model, reasoning_effort: profile.reasoning_effort, fork_turns: "none" })}. Supply the full task in message. task_name is only a label. If this model cannot be selected, keep_root.`;
+  return { hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext } };
+}
+
 function requestRoute(prompt) {
   const body = JSON.stringify({ prompt: prompt.slice(0, maxPromptCharacters) });
   const timestamp = String(Date.now());
@@ -44,9 +56,7 @@ async function main() {
   const event = JSON.parse(raw);
   if (!clientId || !clientSecret || typeof event.prompt !== "string" || event.prompt.trim().startsWith("/")) return console.log(JSON.stringify(fallback()));
   const route = await requestRoute(event.prompt);
-  if (!route.delegate || !["fast", "standard"].includes(route.target)) return console.log(JSON.stringify(fallback()));
-  const context = `gptbuddy routing decision: delegate the entire task exactly once to the \`${route.target}\` subagent role. confidence=${route.confidence.toFixed(2)}; context_need=${route.needs_context.toFixed(2)}. This route is eligible specifically because the task is self-contained; use the root session only if no subagent is available.`;
-  console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
+  console.log(JSON.stringify(hookOutput(route)));
 }
 
 main().catch(() => console.log(JSON.stringify(fallback())));
