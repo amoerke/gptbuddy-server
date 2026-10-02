@@ -45,7 +45,7 @@ async function main() {
   if (!clientId || !clientSecret || typeof event.prompt !== "string" || event.prompt.trim().startsWith("/")) return console.log(JSON.stringify(fallback()));
   const route = await requestRoute(event.prompt);
   if (!route.delegate || !["fast", "standard"].includes(route.target)) return console.log(JSON.stringify(fallback()));
-  const context = `gptbuddy routing decision: delegate once to the \`${route.target}\` subagent role if available. confidence=${route.confidence.toFixed(2)}; context_need=${route.needs_context.toFixed(2)}. This is advisory: keep the task in the root session if it is not actually self-contained.`;
+  const context = `gptbuddy routing decision: delegate the entire task exactly once to the \`${route.target}\` subagent role. confidence=${route.confidence.toFixed(2)}; context_need=${route.needs_context.toFixed(2)}. This route is eligible specifically because the task is self-contained; use the root session only if no subagent is available.`;
   console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
 }
 

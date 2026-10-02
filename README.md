@@ -1,6 +1,6 @@
 # gptbuddy Router-Service
 
-Zentraler, selbst gehosteter Router für verwaltete Codex-Installationen. Der Dienst läuft unter `https://gptbuddy.dataminer.cloud` und bewahrt den Jev-API-Schlüssel ausschließlich auf dem VPS auf. Jev ist der verbindliche Klassifizierer; Codex nutzt anschließend seine eigenen GPT-Subagenten für die tatsächliche Arbeit.
+Zentraler, selbst gehosteter Router für verwaltete Codex-Installationen. Der Dienst läuft unter `https://gptbuddy.dataminer.cloud` und bewahrt den Jev-API-Schlüssel ausschließlich auf dem VPS auf. Jev ist der verbindliche Klassifizierer; bei einer positiven Route weist der Hook Codex an, anschließend einen eigenen, günstigeren GPT-Subagenten für die tatsächliche Arbeit zu verwenden.
 
 ## Sicherheitsmodell
 
